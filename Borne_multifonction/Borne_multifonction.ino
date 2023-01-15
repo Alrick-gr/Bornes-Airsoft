@@ -151,6 +151,7 @@ void menu()
             param_conquete();
             break;
           case (2):
+            param_scenar_dim();
             break;
           case (3):
             break;
@@ -209,7 +210,7 @@ void actu_menu(uint8_t page)
       lcd.setCursor(0, 2);
       lcd.print("C: Bombe");
       lcd.setCursor(0, 3);
-      lcd.print("D:");
+      lcd.print("D: Scenario Dim");
       break;
     case (3):
       lcd.setCursor(0, 0);

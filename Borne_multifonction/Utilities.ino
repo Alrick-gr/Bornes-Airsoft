@@ -164,3 +164,50 @@ uint8_t choix_chiffre(String message, uint8_t minimum, uint8_t maximum, uint8_t 
   
   return nbr;
 }
+
+void choix_code(String message,int8_t* code, uint8_t taille)
+{
+  lcd.clear();
+  for(uint8_t i = 0; i<taille; i++) code[i] = -1;
+  uint8_t index = 0;
+  char key;
+
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Code ?");
+  
+  lcd.setCursor((20-taille)/2,1);
+  for(uint8_t i = 0; i<taille; i++)lcd.print("_");
+  lcd.setCursor((20-taille)/2,1);
+  lcd.print("^");
+
+  if (alarme)
+  {
+    lcd.setCursor(19, 0);
+    lcd.write(0);
+  }
+  while(key != '#' or code[taille-1] == -1)
+  {
+    key = keypad.getKey();
+    if (key == '*') menu();
+    if(key - '0' < 10 and key - '0' >= 0)
+    {
+      couleur(1,0,0);
+      code[index] = key - '0';
+      index++;
+      lcd.setCursor((20-taille)/2, 1);
+
+      for(uint8_t i = 0; i < taille; i++)
+      {
+        //Serial.println(code[i]);
+        if(code[i] != -1)lcd.print(code[i]);
+      }
+     
+      if(index>=taille)index = 0;
+      lcd.setCursor((20-taille)/2 + index, 2);
+      lcd.print("                    ");
+      lcd.print("^");
+      couleur(0,0,0);
+    }
+  }
+}

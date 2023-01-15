@@ -116,47 +116,8 @@ void param_bombe()
 {
   lcd.clear();
   int temps = recup_temps("Temps ?");
-  int8_t code[4] = {-1, -1, -1, -1};
-  uint8_t index = 0;
-  char key;
-
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Code ?");
-  
-  lcd.setCursor(8,1);
-  lcd.print("____");
-  lcd.setCursor(8,2);
-  lcd.print("^");
-
-  if (alarme)
-  {
-    lcd.setCursor(19, 0);
-    lcd.write(0);
-  }
-  while(key != '#' or code[3] == -1)
-  {
-    key = keypad.getKey();
-    if(key - '0' < 10 and key - '0' >= 0)
-    {
-      couleur(1,0,0);
-      code[index] = key - '0';
-      index++;
-      lcd.setCursor(8, 1);
-
-      for(uint8_t i = 0; i < 4; i++)
-      {
-        Serial.println(code[i]);
-        if(code[i] != -1)lcd.print(code[i]);
-      }
-     
-      
-      if(index>=4)index = 0;
-      lcd.setCursor(7 + index, 2);
-      lcd.print(" ^   ");
-      couleur(0,0,0);
-    }
-  }
+  int8_t code[4];
+  choix_code("Code :",code, 4);
   Depart(tempsD);
   bombe(temps, code);
 }
@@ -167,4 +128,12 @@ void param_duel()
   uint8_t nbr_bip = choix_chiffre("Bip avant tir :", 0, 10, 2);
   Depart(tempsD);
   duel(nbr_bip);
+}
+
+void param_scenar_dim()
+{
+  int temps_partie = recup_temps("Temps bombe");
+  int8_t code[6];
+  choix_code("Code :",code, 6);
+  scenar_dim(temps_partie, code);
 }

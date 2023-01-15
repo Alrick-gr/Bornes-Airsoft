@@ -421,3 +421,97 @@ void duel(uint8_t nbr_bip)
   }
   fin_partie("TIREZ !!!");
 }
+
+void scenar_dim(int temps, uint8_t *code)
+{
+  bool phase1 = true;
+  lcd.clear();
+  int debut_partie;
+  bool fin = false;
+  String message;
+  bool etat_led = true;
+  char key;
+  uint8_t entree[6];
+  uint8_t essais = 0, index = 0;
+  lcd.setCursor(7, 2);
+  lcd.print("______");
+  lcd.setCursor(7, 3);
+  lcd.print("RVBCMJ");
+  while (!fin)
+  {
+    key = keypad.getKey();
+    if (key - '0' < 10 and key - '0' >= 0)
+    {
+      entree[index] = key - '0';
+      lcd.setCursor(7 + index, 2);
+      lcd.print(entree[index]);
+      index++;
+      if (index == 6)
+      {
+        index = 0;
+        switch (index)
+        {
+          case 0:
+            couleur(1,0,0);
+            break;
+          case 1:
+            couleur(0,1,0);
+            break;
+          case 2:
+            couleur(0,0,1);
+            break;
+          case 3:
+            couleur(0,1,1);
+            break;
+          case 4:
+            couleur(1,1,0);
+            break;
+          case 5:
+            couleur(1,0,1);
+            break;
+        }
+        if (code[0] == entree[0] && code[1] == entree[1] && code[2] == entree[2] && code[3] == entree[3] && code[4] == entree[4]&& code[5] == entree[5])
+        {
+          if (phase1)
+          {
+            phase1 = false;
+            lcd.setCursor(7, 2);
+            lcd.print("______");
+            for(uint8_t i = 0; i<6; i++) entree[i] = -1;
+            debut_partie = millis() / 1000;
+          }
+          else
+          {
+            fin = true;
+            message = "Bombe desamorcee";
+            alarme = false;
+          }
+        }
+        else
+        {
+          essais++;
+          couleur(1, 0, 0);
+          lcd.setCursor(8, 2);
+          lcd.print("____");
+          if (essais == 3)
+          {
+            fin = true;
+            message = "Code faux";
+          }
+        }
+      }
+    }
+
+    if (millis() / 500 % 2 && !phase1 == false)
+    {
+      lcd.setCursor(7, 1);
+      lcd.print(sec2temps(temps - (millis() / 1000) + debut_partie));
+      if ((temps - (millis() / 1000 - debut_partie)) <= 0)
+      {
+        fin = true;
+        message = "Bombe explosee";
+      }
+    }
+  }
+  fin_partie(message);
+}
