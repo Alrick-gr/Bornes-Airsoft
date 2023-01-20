@@ -74,8 +74,8 @@ void on_alarme(bool etat)
 
 String sec2temps(int sec)
 {
-  int Secondes = sec % 60;
-  int Minutes = (sec - Secondes) / 60;
+  uint8_t Secondes = sec % 60;
+  uint8_t Minutes = (sec - Secondes) / 60;
   String Min, Sec;
   if (Secondes < 10) Sec = '0' + String(Secondes);
   else Sec = String(Secondes);
@@ -89,11 +89,7 @@ String sec2temps(int sec)
 void Depart(int temps)
 {
   lcd.clear();
-  if (alarme)
-  {
-    lcd.setCursor(19, 0);
-    lcd.write(0);
-  }
+  logos();
   lcd.setCursor(0, 0);
   lcd.print("Appuyez sur # pour");
   lcd.setCursor(0, 1);
@@ -154,9 +150,11 @@ uint8_t choix_chiffre(String message, uint8_t minimum, uint8_t maximum, uint8_t 
     {
       if ((key - '0' < maximum + 1) && (key - '0' > minimum-1) && key != '#')
       {
+        couleur(1,0,0);
         nbr = key - '0';
         lcd.setCursor(9, 2);
         lcd.print(nbr);
+        couleur(0,0,0);
       }
     }
   }
@@ -181,11 +179,7 @@ void choix_code(String message,int8_t* code, uint8_t taille)
   lcd.setCursor((20-taille)/2,1);
   lcd.print("^");
 
-  if (alarme)
-  {
-    lcd.setCursor(19, 0);
-    lcd.write(0);
-  }
+  logos();
   while(key != '#' or code[taille-1] == -1)
   {
     key = keypad.getKey();

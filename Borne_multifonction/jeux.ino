@@ -12,7 +12,6 @@ void spawn(int temps_partie, int temps_spawn)
   bool flag_temps = true;
   while (millis() / 1000 - debut_partie < temps_partie)
   {
-
     lcd.setCursor(8, 1);
     if ((millis() / 500) % 2 && flag_temps) //affichage du temps partie toutes les secondes
     {
@@ -52,7 +51,6 @@ void spawn(int temps_partie, int temps_spawn)
   }
   fin_partie("temps ecoule");
 }
-
 
 void clicker(uint8_t nbrClic)
 {
@@ -137,7 +135,6 @@ void CS(int temps)
           oldkey = 'A';
         }
       }
-      
     }
   }
   cpt--;
@@ -405,6 +402,7 @@ void conquete(uint8_t nbrClick, int temps_partie, int temps_spawn)
   lcd.clear();
   spawn(temps_partie, temps_spawn);
 }
+
 void duel(uint8_t nbr_bip)
 {
   lcd.clear();
