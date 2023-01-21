@@ -8,48 +8,11 @@ void param_spawn()
   spawn(temps_partie, temps_spawn);
 }
 
-
 void param_clicker()
 {
-  
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("      Clicker      ");
-  lcd.setCursor(0, 1);
-  lcd.print("     Limite :       ");
-  lcd.setCursor(0, 2);
-  lcd.print("         __         ");
-  char limite[2] = {'_', '_'};
-  int index = 0;
-  lcd.setCursor(8, 3);
-  lcd.print(" ^ ");
-  
-  logos();
-  char key = keypad.getKey();
-
-  while (key != '#' || limite[0] == '_' || limite[1] == '_')
-  {
-    key = keypad.getKey();
-    if (key)
-    {
-      if (key == '*') menu();
-      if (key != '#')
-      {
-        limite[index] = key;
-        index++;
-        if (index > 1)index = 0;
-
-        lcd.setCursor(9, 2);
-        lcd.print(limite[0]);
-        lcd.print(limite[1]);
-
-        lcd.setCursor(8 + index, 3);
-        lcd.print(" ^ ");
-      }
-    }
-  }
-  Depart(tempsD);
-  clicker((limite[0]  - '0') * 10 + (limite[1]  - '0'));
+  uint8_t nbr[2];
+  choix_code("Limite :", nbr, 2);
+  clicker(nbr[0] * 10 + nbr[1]);
 
 }
 
@@ -67,50 +30,14 @@ void param_capture()
 
 void param_conquete()
 {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("    Vie defence     ");
-  lcd.setCursor(0, 1);
-  lcd.print("     Limite :       ");
-  lcd.setCursor(0, 2);
-  lcd.print("         __         ");
-  char limite[2] = {'_', '_'};
-  uint8_t index = 0;
-  lcd.setCursor(8, 3);
-  lcd.print(" ^ ");
-  
-  logos();
-  char key = keypad.getKey();
-
-  while (key != '#' || limite[0] == '_' || limite[1] == '_')
-  {
-    key = keypad.getKey();
-    if (key)
-    {
-      if (key == '*') menu();
-      if (key != '#')
-      {
-        limite[index] = key;
-        index++;
-        if (index > 1)index = 0;
-
-        lcd.setCursor(9, 2);
-        lcd.print(limite[0]);
-        lcd.print(limite[1]);
-
-        lcd.setCursor(8 + index, 3);
-        lcd.print(" ^ ");
-      }
-    }
-  }
-  uint8_t vie = (limite[0]  - '0') * 10 + (limite[1]  - '0');
+  uint8_t nbr[2];
+  choix_code("Vie defense :", nbr, 2);
   int temps_partie = recup_temps("Partie");
   int temps_spawn  = recup_temps("Spawn");
 
   Depart(tempsD);
-  conquete(vie , temps_partie, temps_spawn);
+  conquete(nbr[0] * 10 + nbr[1] , temps_partie, temps_spawn);
 }
-
 
 void param_bombe()
 {

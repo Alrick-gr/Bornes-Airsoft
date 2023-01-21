@@ -113,6 +113,11 @@ void Depart(int temps)
       lcd.print(sec2temps(temps - (millis() / 1000) + delta));
     }
   }
+  lcd.clear();
+  lcd.setCursor(0, 1);
+  lcd.print("Debut de partie");
+  delay(3000);
+  lcd.clear();
 }
 
 void logos()
@@ -172,11 +177,11 @@ void choix_code(String message,int8_t* code, uint8_t taille)
 
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("Code ?");
+  lcd.print(message);
   
   lcd.setCursor((20-taille)/2,1);
   for(uint8_t i = 0; i<taille; i++)lcd.print("_");
-  lcd.setCursor((20-taille)/2,1);
+  lcd.setCursor((20-taille)/2,2);
   lcd.print("^");
 
   logos();
@@ -198,8 +203,9 @@ void choix_code(String message,int8_t* code, uint8_t taille)
       }
      
       if(index>=taille)index = 0;
-      lcd.setCursor((20-taille)/2 + index, 2);
+      lcd.setCursor(0, 2);
       lcd.print("                    ");
+      lcd.setCursor((20-taille)/2 + index, 2);
       lcd.print("^");
       couleur(0,0,0);
     }

@@ -81,17 +81,18 @@ void setup()
   digitalWrite(ALARME, HIGH);
   
   couleur(1,0,0);
-  delay(100);
+  delay(500);
   couleur(0,1,0);
-  delay(100);
+  delay(500);
   couleur(0,0,1);
-  delay(100);
+  delay(500);
   couleur(0,1,1);
-  delay(100);
+  delay(500);
   couleur(1,0,1);
-  delay(100);
+  delay(500);
   couleur(1,1,0);
-  delay(100);
+  delay(500);
+  couleur(0,0,0);
 
   menu();
 }
@@ -113,15 +114,17 @@ void menu()
         {
           case (1):
             param_spawn();
+            actu_menu(page);
             break;
           case (2):
             param_CS();
+            actu_menu(page);
             break;
           case (3):
             break;
           case (4):
             tempsD = recup_temps("Temps avant depart");
-            actu_menu(4);
+            actu_menu(page);
             break;
         }
         break;
@@ -130,14 +133,17 @@ void menu()
         {
           case (1):
             param_clicker();
+            actu_menu(page);
             break;
           case (2):
             param_duel();
+            actu_menu(page);
             break;
           case (3):
             break;
           case (4):
             couleur_LED();
+            actu_menu(page);
             break;
         }
         break;
@@ -146,14 +152,17 @@ void menu()
         {
           case (1):
             param_capture();
+            actu_menu(page);
             break;
           case (2):
             param_bombe();
+            actu_menu(page);
             break;
           case (3):
             break;
           case (4):
             param_generaux();
+            actu_menu(page);
             break;
         }
         break;
@@ -162,9 +171,11 @@ void menu()
         {
           case (1):
             param_conquete();
+            actu_menu(page);
             break;
           case (2):
             param_scenar_dim();
+            actu_menu(page);
             break;
           case (3):
             break;
@@ -252,7 +263,6 @@ void actu_menu(uint8_t page)
   logos();
 }
 
-
 void fin_partie(String message)
 {
   lcd.clear();
@@ -269,7 +279,6 @@ void fin_partie(String message)
   on_alarme(false);
   couleur(0, 0, 0);
   while (keypad.getKey() != '#');
-  actu_menu(1);
 }
 
 void param_generaux()

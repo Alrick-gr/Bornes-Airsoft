@@ -1,10 +1,6 @@
 void spawn(int temps_partie, int temps_spawn)
 {
-  lcd.clear();
-  lcd.setCursor(0, 1);
-  lcd.print("Debut de partie");
-  delay(3000);
-  lcd.clear();
+  
 
   int debut_partie = millis() / 1000;
   uint8_t debut_spawn = 0;
@@ -54,7 +50,6 @@ void spawn(int temps_partie, int temps_spawn)
 
 void clicker(uint8_t nbrClic)
 {
-  if (depart)Depart(tempsD);
   lcd.clear();
   if (nbrClic == 0)
   {
@@ -98,7 +93,7 @@ void CS(int temps)
 {
   //phase plante
   lcd.clear();
-  lcd.setCursor(5,1);
+  lcd.setCursor(5, 1);
   lcd.print("**********");
   int8_t cpt = 0;
   int delta = 0;
@@ -106,32 +101,32 @@ void CS(int temps)
   char oldkey;
   char code[10];
   String message;
-  while(cpt <10)
+  while (cpt < 10)
   {
     key = keypad.getKey();
     if (key)
     {
-      if(cpt <= 1)
+      if (cpt <= 1)
       {
         on_alarme(true);
         delay(50);
         on_alarme(false);
       }
-      if(key - '0' < 10 and key - '0' >= 0)
+      if (key - '0' < 10 and key - '0' >= 0)
       {
-        if(key != oldkey)
+        if (key != oldkey)
         {
-          lcd.setCursor(14-cpt, 1);
+          lcd.setCursor(14 - cpt, 1);
           lcd.print(key);
-          code[cpt]=key;
+          code[cpt] = key;
           cpt++;
-          oldkey=key;
+          oldkey = key;
         }
         else
         {
-          lcd.setCursor(5,1);
+          lcd.setCursor(5, 1);
           lcd.print("**********");
-          cpt=0;
+          cpt = 0;
           oldkey = 'A';
         }
       }
@@ -142,17 +137,17 @@ void CS(int temps)
   on_alarme(1);
   delay(500);
   on_alarme(0);
-  
+
   lcd.clear();
-  lcd.setCursor(5,0);
+  lcd.setCursor(5, 0);
   lcd.print("**********");
-  lcd.setCursor(5,1);
+  lcd.setCursor(5, 1);
   lcd.print("^");
-  lcd.setCursor(5,0);
+  lcd.setCursor(5, 0);
   lcd.print(code[cpt]);
-  int debut_partie = millis()/1000;
+  int debut_partie = millis() / 1000;
   bool fin = false;
-  while(!fin)
+  while (!fin)
   {
     if (millis() / 500 % 2)
     {
@@ -170,35 +165,35 @@ void CS(int temps)
     key = keypad.getKey();
     if (key)
     {
-      if(cpt >= 8)
+      if (cpt >= 8)
       {
         on_alarme(true);
         delay(50);
         on_alarme(false);
       }
-      if(key - '0' < 10 and key - '0' >= 0)
+      if (key - '0' < 10 and key - '0' >= 0)
       {
-        if(key == code[cpt])
+        if (key == code[cpt])
         {
           cpt--;
-          lcd.setCursor(14-cpt, 0);
+          lcd.setCursor(14 - cpt, 0);
           lcd.print(code[cpt]);
-          lcd.setCursor(13-cpt, 1);
+          lcd.setCursor(13 - cpt, 1);
           lcd.print(" ^");
         }
         else
         {
-          cpt=9;
-          lcd.setCursor(5,0);
+          cpt = 9;
+          lcd.setCursor(5, 0);
           lcd.print("**********");
-          lcd.setCursor(5,1);
+          lcd.setCursor(5, 1);
           lcd.print("^         ");
-          lcd.setCursor(5,0);
+          lcd.setCursor(5, 0);
           lcd.print(code[cpt]);
         }
       }
     }
-    if(cpt == -1)
+    if (cpt == -1)
     {
       fin = true;
       alarme = false;
@@ -322,12 +317,12 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
   }
   for (uint8_t i = 1; i <= nbr_equipe && i <= 7; i++)
   {
-    
-    if(i>4) lcd.setCursor(11, i-1-4);
-    else lcd.setCursor(0, i-1);
-    
+
+    if (i > 4) lcd.setCursor(11, i - 1 - 4);
+    else lcd.setCursor(0, i - 1);
+
     lcd.print(String(equipe[i]) + ':' + sec2temps(temps[i]));
-    
+
   }
   while (!keypad.getKey());
   actu_menu(1);
@@ -406,16 +401,16 @@ void conquete(uint8_t nbrClick, int temps_partie, int temps_spawn)
 void duel(uint8_t nbr_bip)
 {
   lcd.clear();
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
   lcd.print("        DUEL      ");
   alarme = true;
   delay(5000);
-  for(uint8_t i = 0; i<2; i++)
+  for (uint8_t i = 0; i < 2; i++)
   {
     on_alarme(true);
     delay(100);
     on_alarme(false);
-    delay(1000*random(1, 10));
+    delay(1000 * random(1, 10));
   }
   fin_partie("TIREZ !!!");
 }
@@ -434,48 +429,49 @@ void scenar_dim(int temps, uint8_t *code)
   lcd.setCursor(7, 2);
   lcd.print("______");
   lcd.setCursor(7, 3);
-  lcd.print("RVBCMJ");
+  lcd.print("RVBCJM");
   while (!fin)
   {
     key = keypad.getKey();
+    switch (index)
+    {
+      case 0:
+        couleur(1, 0, 0);
+        break;
+      case 1:
+        couleur(0, 1, 0);
+        break;
+      case 2:
+        couleur(0, 0, 1);
+        break;
+      case 3:
+        couleur(0, 1, 1);
+        break;
+      case 4:
+        couleur(1, 1, 0);
+        break;
+      case 5:
+        couleur(1, 0, 1);
+        break;
+    }
     if (key - '0' < 10 and key - '0' >= 0)
     {
       entree[index] = key - '0';
       lcd.setCursor(7 + index, 2);
       lcd.print(entree[index]);
       index++;
+
       if (index == 6)
       {
         index = 0;
-        switch (index)
-        {
-          case 0:
-            couleur(1,0,0);
-            break;
-          case 1:
-            couleur(0,1,0);
-            break;
-          case 2:
-            couleur(0,0,1);
-            break;
-          case 3:
-            couleur(0,1,1);
-            break;
-          case 4:
-            couleur(1,1,0);
-            break;
-          case 5:
-            couleur(1,0,1);
-            break;
-        }
-        if (code[0] == entree[0] && code[1] == entree[1] && code[2] == entree[2] && code[3] == entree[3] && code[4] == entree[4]&& code[5] == entree[5])
+        if (code[0] == entree[0] && code[1] == entree[1] && code[2] == entree[2] && code[3] == entree[3] && code[4] == entree[4] && code[5] == entree[5])
         {
           if (phase1)
           {
             phase1 = false;
             lcd.setCursor(7, 2);
             lcd.print("______");
-            for(uint8_t i = 0; i<6; i++) entree[i] = -1;
+            for (uint8_t i = 0; i < 6; i++) entree[i] = -1;
             debut_partie = millis() / 1000;
           }
           else
@@ -489,8 +485,8 @@ void scenar_dim(int temps, uint8_t *code)
         {
           essais++;
           couleur(1, 0, 0);
-          lcd.setCursor(8, 2);
-          lcd.print("____");
+          lcd.setCursor(7, 2);
+          lcd.print("______");
           if (essais == 3)
           {
             fin = true;
@@ -500,7 +496,7 @@ void scenar_dim(int temps, uint8_t *code)
       }
     }
 
-    if (millis() / 500 % 2 && !phase1 == false)
+    if (millis() / 500 % 2 && !phase1)
     {
       lcd.setCursor(7, 1);
       lcd.print(sec2temps(temps - (millis() / 1000) + debut_partie));
