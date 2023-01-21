@@ -19,17 +19,17 @@
 //  {'A', 'B', 'C', 'D'}
 //};
 
-char keys[ROW_NUM][COLUMN_NUM] = {
+const char keys[ROW_NUM][COLUMN_NUM] = {
   {'D', 'C', 'B', 'A'},
   {'#', '9', '6', '3'},
   {'0', '8', '5', '2'},
   {'*', '7', '4', '1'}
 };
 
-byte pin_rows[ROW_NUM] = {9, 8, 7, 6}; //connect to the row pinouts of the keypad
-byte pin_column[COLUMN_NUM] = {5, 4, 3, 2}; //connect to the column pinouts of the keypad
+const byte pin_rows[ROW_NUM] = {9, 8, 7, 6}; //connect to the row pinouts of the keypad
+const byte pin_column[COLUMN_NUM] = {5, 4, 3, 2}; //connect to the column pinouts of the keypad
 
-byte cloche[8] = {
+const byte cloche[8] = {
   B00000,
   B00100,
   B01010,
@@ -40,7 +40,7 @@ byte cloche[8] = {
   B00000
 };
 
-byte fleche[8] = {
+const byte fleche[8] = {
   B11000,
   B11100,
   B10110,
@@ -67,10 +67,10 @@ void setup()
   lcd.createChar(0, cloche);
   lcd.createChar(1, fleche);
 
-  lcd.setCursor(7, 1);         // move cursor to   (0, 0)
-  lcd.print("SAT37");        // print message at (0, 0)
-  delay(1000);
-
+  lcd.setCursor(7, 1);
+  lcd.print("SAT37");
+  
+  
   pinMode(ROUGE, OUTPUT);
   digitalWrite(ROUGE, LOW);
   pinMode(VERT, OUTPUT);
@@ -79,6 +79,20 @@ void setup()
   digitalWrite(BLEU, LOW);
   pinMode(ALARME, OUTPUT);
   digitalWrite(ALARME, HIGH);
+  
+  couleur(1,0,0);
+  delay(500);
+  couleur(0,1,0);
+  delay(500);
+  couleur(0,0,1);
+  delay(500);
+  couleur(0,1,1);
+  delay(500);
+  couleur(1,0,1);
+  delay(500);
+  couleur(1,1,0);
+  delay(500);
+  couleur(0,0,0);
 
   menu();
 }
@@ -100,15 +114,17 @@ void menu()
         {
           case (1):
             param_spawn();
+            actu_menu(page);
             break;
           case (2):
             param_CS();
+            actu_menu(page);
             break;
           case (3):
             break;
           case (4):
             tempsD = recup_temps("Temps avant depart");
-            actu_menu(4);
+            actu_menu(page);
             break;
         }
         break;
@@ -117,14 +133,17 @@ void menu()
         {
           case (1):
             param_clicker();
+            actu_menu(page);
             break;
           case (2):
             param_duel();
+            actu_menu(page);
             break;
           case (3):
             break;
           case (4):
             couleur_LED();
+            actu_menu(page);
             break;
         }
         break;
@@ -133,14 +152,17 @@ void menu()
         {
           case (1):
             param_capture();
+            actu_menu(page);
             break;
           case (2):
             param_bombe();
+            actu_menu(page);
             break;
           case (3):
             break;
           case (4):
             param_generaux();
+            actu_menu(page);
             break;
         }
         break;
@@ -149,8 +171,11 @@ void menu()
         {
           case (1):
             param_conquete();
+            actu_menu(page);
             break;
           case (2):
+            param_scenar_dim();
+            actu_menu(page);
             break;
           case (3):
             break;
@@ -209,7 +234,7 @@ void actu_menu(uint8_t page)
       lcd.setCursor(0, 2);
       lcd.print("C: Bombe");
       lcd.setCursor(0, 3);
-      lcd.print("D:");
+      lcd.print("D: Scenario Dim");
       break;
     case (3):
       lcd.setCursor(0, 0);
@@ -235,13 +260,8 @@ void actu_menu(uint8_t page)
   lcd.setCursor(19, 3);
   lcd.print(page);
 
-  if (alarme)
-  {
-    lcd.setCursor(19, 0);
-    lcd.write(0);
-  }
+  logos();
 }
-
 
 void fin_partie(String message)
 {
@@ -259,7 +279,6 @@ void fin_partie(String message)
   on_alarme(false);
   couleur(0, 0, 0);
   while (keypad.getKey() != '#');
-  actu_menu(1);
 }
 
 void param_generaux()
@@ -272,7 +291,6 @@ void param_generaux()
     key = keypad.getKey();
     switch (key)
     {
-
       case ('A'):
         lumiere = !lumiere;
         actu_param();
