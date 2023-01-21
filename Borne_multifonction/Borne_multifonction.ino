@@ -1,7 +1,8 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
-//#include "parametre.h"
+#define V1
+//#define V2
 
 #define ROUGE 11
 #define VERT 13
@@ -12,20 +13,25 @@
 #define ROW_NUM 4   //four rows
 #define COLUMN_NUM 4 //four columns
 
-//char keys[ROW_NUM][COLUMN_NUM] = {
-//  {'1', '4', '7', '*'},
-//  {'2', '5', '8', '0'},
-//  {'3', '6', '9', '#'},
-//  {'A', 'B', 'C', 'D'}
-//};
-
+#ifdef V1
+char keys[ROW_NUM][COLUMN_NUM] = {
+  {'1', '4', '7', '*'},
+  {'2', '5', '8', '0'},
+  {'3', '6', '9', '#'},
+  {'A', 'B', 'C', 'D'}
+};
+#endif 
+#ifdef V2
 const char keys[ROW_NUM][COLUMN_NUM] = {
   {'D', 'C', 'B', 'A'},
   {'#', '9', '6', '3'},
   {'0', '8', '5', '2'},
   {'*', '7', '4', '1'}
 };
-
+#endif
+#if defined(V1)&& defined(V2)
+#error "Pas les deux"
+#endif
 const byte pin_rows[ROW_NUM] = {9, 8, 7, 6}; //connect to the row pinouts of the keypad
 const byte pin_column[COLUMN_NUM] = {5, 4, 3, 2}; //connect to the column pinouts of the keypad
 
