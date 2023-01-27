@@ -1,8 +1,8 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
-#define V1
-//#define V2
+//#define V1
+#define V2
 
 #define ROUGE 11
 #define VERT 13
