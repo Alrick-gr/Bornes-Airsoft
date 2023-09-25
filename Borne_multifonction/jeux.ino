@@ -2,8 +2,8 @@ void spawn(int temps_partie, int temps_spawn)
 {
   
 
-  int debut_partie = millis() / 1000;
-  uint8_t debut_spawn = 0;
+  static int debut_partie = millis() / 1000;
+  uint32_t debut_spawn = 0;
   bool flag = false;
   bool flag_temps = true;
   while (millis() / 1000 - debut_partie < temps_partie)
@@ -227,7 +227,7 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
       {
         equipe_active = key - '0';
         on_alarme(true);
-        delay(100);
+        delay(200);
         on_alarme(false);
       }
 

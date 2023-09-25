@@ -87,17 +87,17 @@ void setup()
   digitalWrite(ALARME, HIGH);
   
   couleur(1,0,0);
-  delay(500);
+  delay(250);
   couleur(0,1,0);
-  delay(500);
+  delay(250);
   couleur(0,0,1);
-  delay(500);
+  delay(250);
   couleur(0,1,1);
-  delay(500);
+  delay(250);
   couleur(1,0,1);
-  delay(500);
+  delay(250);
   couleur(1,1,0);
-  delay(500);
+  delay(250);
   couleur(0,0,0);
 
   menu();
