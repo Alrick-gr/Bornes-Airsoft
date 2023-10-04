@@ -1,39 +1,20 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-#include <Keypad.h>
-//#define V1
-#define V2
+#include "I2CKeyPad.h"
+
+#define DEBUG
+
+#define KEY_PRESS_INT_PIN 2
+
 
 #define ROUGE 11
 #define VERT 13
 #define BLEU 12
 #define ALARME 10
 
+const uint8_t KEYPAD_ADDRESS = 0x23;
 
-#define ROW_NUM 4   //four rows
-#define COLUMN_NUM 4 //four columns
-
-#ifdef V1
-char keys[ROW_NUM][COLUMN_NUM] = {
-  {'1', '4', '7', '*'},
-  {'2', '5', '8', '0'},
-  {'3', '6', '9', '#'},
-  {'A', 'B', 'C', 'D'}
-};
-#endif 
-#ifdef V2
-const char keys[ROW_NUM][COLUMN_NUM] = {
-  {'D', 'C', 'B', 'A'},
-  {'#', '9', '6', '3'},
-  {'0', '8', '5', '2'},
-  {'*', '7', '4', '1'}
-};
-#endif
-#if defined(V1)&& defined(V2)
-#error "Pas les deux"
-#endif
-const byte pin_rows[ROW_NUM] = {9, 8, 7, 6}; //connect to the row pinouts of the keypad
-const byte pin_column[COLUMN_NUM] = {5, 4, 3, 2}; //connect to the column pinouts of the keypad
+I2CKeyPad keyPad(KEYPAD_ADDRESS);
 
 const byte cloche[8] = {
   B00000,
@@ -58,16 +39,34 @@ const byte fleche[8] = {
 };
 
 LiquidCrystal_I2C lcd(0x27, 20, 4); // I2C address 0x27, 16 column and 2 rows
-Keypad keypad = Keypad( makeKeymap(keys), pin_rows, pin_column, ROW_NUM, COLUMN_NUM );
+
 
 bool lumiere = true;
 bool LEDs = true;
 bool alarme = false;
 bool depart = true;
 int tempsD = 0;
+
+char key = "";
+bool key_pressed = false;
+
+void handleKeyPress() {
+  key_pressed = true;
+}
+
 void setup()
 {
+#ifdef DEBUG
   Serial.begin(9600);
+#endif
+  keyPad.begin();
+  keyPad.setKeyPadMode();
+  char keyMap[] = "123A456B789C*0#D";  // N = NoKey, F = Fail
+  keyPad.loadKeyMap(keyMap);
+  
+  pinMode(KEY_PRESS_INT_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(KEY_PRESS_INT_PIN), handleKeyPress, FALLING);
+  
   lcd.init(); // initialize the lcd
   lcd.backlight();
   lcd.createChar(0, cloche);
@@ -113,7 +112,8 @@ void menu()
   actu_menu(page);
   while (true)
   {
-    switch (keypad.getKey())
+    getKeyPad(&key);
+    switch (key)
     {
       case ('A'):
         switch (page)
@@ -190,7 +190,7 @@ void menu()
             lcd.clear();
             lcd.setCursor(0,0);
             lcd.print("Ca sonne");
-            while (!keypad.getKey());
+            while (!getKeyPad(&key));
             on_alarme(false);
             actu_menu(page);
         }
@@ -277,24 +277,28 @@ void fin_partie(String message)
   lcd.setCursor(0, 1);
   lcd.print(message);
 
+  char key;
   on_alarme(true);
-  while (!keypad.getKey())
+  while (!getKeyPad(&key))
   {
     if (millis() / 100 % 2)couleur(random(2), random(2), random(2));
   }
   on_alarme(false);
   couleur(0, 0, 0);
-  while (keypad.getKey() != '#');
+  while (key != '#')
+    getKeyPad(&key);
 }
 
 void param_generaux()
 {
   lcd.clear();
-  char key = keypad.getKey();
   actu_param();
   while (key != '#')
   {
-    key = keypad.getKey();
+    if(key_pressed)
+    {
+      getKeyPad(&key);
+    }
     switch (key)
     {
       case ('A'):
@@ -367,11 +371,9 @@ void couleur_LED()
   lcd.setCursor(0, 2);
   lcd.print("Blanc           Noir");
   uint8_t num = 0;
-  char key = keypad.getKey();
   while (key != '#')
   {
-    key = keypad.getKey();
-    if (key)
+    if (getKeyPad(&key))
     {
       num = key - '0';
       switch (num)
@@ -396,4 +398,19 @@ void couleur_LED()
     }
   }
   menu();
+}
+bool getKeyPad(char * value)
+{
+  if(key_pressed && keyPad.isPressed())
+  {
+    key_pressed = false;
+    *value = keyPad.getChar();
+    #ifdef DEBUG
+    Serial.println(*value);
+#endif
+    return 1;
+  }
+  else
+    *value = "";
+  return 0;
 }

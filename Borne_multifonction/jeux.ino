@@ -19,7 +19,7 @@ void spawn(int temps_partie, int temps_spawn)
     }
     if (!(millis() / 500 % 2))flag_temps = true;
 
-    if (keypad.getKey() && !flag)
+    if (getKeyPad(&key) && !flag)
     {
       debut_spawn = millis() / 1000;
       flag = true;
@@ -59,7 +59,7 @@ void clicker(uint8_t nbrClic)
     lcd.print(nbrClic);
     while (true)
     {
-      if (keypad.getKey())
+      if (getKeyPad(&key))
       {
         nbrClic++;
         lcd.setCursor(9, 2);
@@ -76,7 +76,7 @@ void clicker(uint8_t nbrClic)
     lcd.print(nbrClic);
     while (nbrClic > 0)
     {
-      if (keypad.getKey())
+      if (getKeyPad(&key))
       {
         nbrClic--;
 
@@ -97,13 +97,12 @@ void CS(int temps)
   lcd.print("**********");
   int8_t cpt = 0;
   int delta = 0;
-  char key;
   char oldkey;
   char code[10];
   String message;
   while (cpt < 10)
   {
-    key = keypad.getKey();
+    getKeyPad(&key);
     if (key)
     {
       if (cpt <= 1)
@@ -162,7 +161,7 @@ void CS(int temps)
     }
     else couleur(0, 0, 0);
 
-    key = keypad.getKey();
+    getKeyPad(&key);
     if (key)
     {
       if (cpt >= 8)
@@ -220,7 +219,8 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
   char key;
   while (!fin)
   {
-    key = keypad.getKey();
+    
+    getKeyPad(&key);
     if (key)
     {
       if ((key - '0' <= nbr_equipe) && (key - '0' > 0))
@@ -274,7 +274,6 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
     if (equipe_active != -1)
     {
       temps[equipe_active] = millis() / 1000 - debut_partie;
-      //Serial.println("-----------");
       for (uint8_t i = 1; i <= nbr_equipe; i++)
       {
         if (i != equipe_active)temps[equipe_active] -= temps[i];
@@ -324,7 +323,7 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
     lcd.print(String(equipe[i]) + ':' + sec2temps(temps[i]));
 
   }
-  while (!keypad.getKey());
+  while (getKeyPad(&key));
   actu_menu(1);
 }
 
@@ -342,7 +341,10 @@ void bombe(int temps, uint8_t *code)
   lcd.print("____");
   while (!fin)
   {
-    key = keypad.getKey();
+    if(key_pressed)
+    {
+      getKeyPad(&key);
+    }
     if (key - '0' < 10 and key - '0' >= 0)
     {
       entree[index] = key - '0';
@@ -423,7 +425,6 @@ void scenar_dim(int temps, uint8_t *code)
   bool fin = false;
   String message;
   bool etat_led = true;
-  char key;
   uint8_t entree[6];
   uint8_t essais = 0, index = 0;
   lcd.setCursor(7, 2);
@@ -432,7 +433,10 @@ void scenar_dim(int temps, uint8_t *code)
   lcd.print("RVBCJM");
   while (!fin)
   {
-    key = keypad.getKey();
+    if(key_pressed)
+    {
+      getKeyPad(&key);
+    }
     switch (index)
     {
       case 0:

@@ -9,13 +9,11 @@ int recup_temps(String message)
   lcd.print("  ^  ");
   
   logos();
-  char key = keypad.getKey();
   uint8_t  temps[4] = {0, 0, 0, 0};
   uint8_t index = 0;
   while (key != '#')
   {
-    key = keypad.getKey();
-    if (key)
+    if(getKeyPad(&key))
     {
       if (key == '*') menu();
       else
@@ -39,6 +37,7 @@ int recup_temps(String message)
       }
     }
   }
+  key = "";
 
   return ((int)(temps[0] * 10 + temps[1]) * 60 + temps[2] * 10 + temps[3]);
 }
@@ -96,7 +95,9 @@ void Depart(int temps)
   lcd.print("  lancer la partie");
   lcd.setCursor(0, 2);
   lcd.print("     dans " + sec2temps(temps));
-  while (keypad.getKey() != '#');
+  char key;
+  while ( key != '#')
+    getKeyPad(&key);
 
   lcd.setCursor(0, 0);
   lcd.print("                   ");
@@ -116,7 +117,7 @@ void Depart(int temps)
   lcd.clear();
   lcd.setCursor(0, 1);
   lcd.print("Debut de partie");
-  delay(3000);
+  delay(2000);
   lcd.clear();
 }
 
@@ -149,7 +150,7 @@ uint8_t choix_chiffre(String message, uint8_t minimum, uint8_t maximum, uint8_t 
   
   do
   {
-    key = keypad.getKey();
+    getKeyPad(&key);
     if (key == '*') menu();
     else
     {
@@ -187,7 +188,7 @@ void choix_code(String message,int8_t* code, uint8_t taille)
   logos();
   while(key != '#' or code[taille-1] == -1)
   {
-    key = keypad.getKey();
+    getKeyPad(&key);
     if (key == '*') menu();
     if(key - '0' < 10 and key - '0' >= 0)
     {
@@ -198,7 +199,6 @@ void choix_code(String message,int8_t* code, uint8_t taille)
 
       for(uint8_t i = 0; i < taille; i++)
       {
-        //Serial.println(code[i]);
         if(code[i] != -1)lcd.print(code[i]);
       }
      
