@@ -214,7 +214,7 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
     temps[i] = 0;
     equipe[i] = i;
   }
-  int8_t equipe_active = -1;
+  int8_t equipe_active = 0;
   bool fin = false;
   char key;
   while (!fin)
@@ -223,7 +223,7 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
     getKeyPad(&key);
     if (key)
     {
-      if ((key - '0' <= nbr_equipe) && (key - '0' > 0))
+      if ((key - '0' <= nbr_equipe) && (key - '0' >= 0))
       {
         equipe_active = key - '0';
         on_alarme(true);
@@ -235,9 +235,9 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
       {
         case (1): couleur(1, 0, 0);
           break;
-        case (2): couleur(0, 1, 0);
+        case (3): couleur(0, 1, 0);
           break;
-        case (3): couleur(0, 0, 1);
+        case (2): couleur(0, 0, 1);
           break;
         case (4): couleur(0, 1, 1);
           break;
@@ -274,7 +274,7 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
     if (equipe_active != -1)
     {
       temps[equipe_active] = millis() / 1000 - debut_partie;
-      for (uint8_t i = 1; i <= nbr_equipe; i++)
+      for (uint8_t i = 0; i <= nbr_equipe; i++)
       {
         if (i != equipe_active)temps[equipe_active] -= temps[i];
       }
