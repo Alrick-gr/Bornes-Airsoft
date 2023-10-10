@@ -203,12 +203,14 @@ void CS(int temps)
   fin_partie(message);
 }
 
-void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
+void capture(uint8_t nbr_equipe, int temps_limite, uint8_t temps_appuis)
 {
   lcd.clear();
   couleur(0, 0, 0);
-  int debut_partie = millis() / 1000;
-  int temps[nbr_equipe + 1];
+  unsigned int debut_partie = millis() / 1000;
+  unsigned int temps[nbr_equipe + 1];
+  unsigned int delta_appuis = -1;
+  uint8_t equipe_suivante = 0;
   uint8_t equipe[nbr_equipe + 1];
   for (uint8_t i = 0; i <= nbr_equipe; i++)
   {
@@ -225,32 +227,30 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
     {
       if ((key - '0' <= nbr_equipe) && (key - '0' >= 0))
       {
-        equipe_active = key - '0';
-        on_alarme(true);
-        delay(200);
-        on_alarme(false);
-      }
-
-      switch (equipe_active)
-      {
-        case (1): couleur(1, 0, 0);
-          break;
-        case (3): couleur(0, 1, 0);
-          break;
-        case (2): couleur(0, 0, 1);
-          break;
-        case (4): couleur(0, 1, 1);
-          break;
-        case (5): couleur(1, 0, 1);
-          break;
-        case (6): couleur(1, 1, 0);
-          break;
-        case (7): couleur(1, 1, 1);
-          break;
-        default: couleur(0, 0, 0);
-          break;
+        if(delta_appuis == -1)
+        {
+          delta_appuis = millis()/1000;
+        }
+        equipe_suivante = key - '0';
       }
     }
+    if(pressed)//si bouton maintenu
+    {
+      on_alarme(1);
+      if(delta_appuis + temps_appuis <= millis()/1000)
+      {
+        equipe_active = equipe_suivante;
+        
+      }
+      set_couleur(((millis() / 250) % 2)? equipe_suivante : equipe_active);
+    }
+    else
+    {
+      on_alarme(0);
+      delta_appuis = -1;
+      set_couleur(equipe_active);
+    }
+      
     if ((millis() / 500) % 2)
     {
       switch (nbr_equipe)
@@ -275,11 +275,11 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t difficult)
     {
       temps[equipe_active] = millis() / 1000 - debut_partie;
       //Serial.println("-----------");
-      for (uint8_t i = 1; i <= nbr_equipe; i++)
+      for (uint8_t i = 0; i <= nbr_equipe; i++)
       {
         if (i != equipe_active)temps[equipe_active] -= temps[i];
       }
-      if (temps[equipe_active] >= temps_limite)fin = true;
+      if (temps[equipe_active] >= temps_limite && equipe_active != 0)fin = true;
     }
     else debut_partie = millis() / 1000;
   }

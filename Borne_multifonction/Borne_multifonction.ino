@@ -65,6 +65,9 @@ bool LEDs = true;
 bool alarme = false;
 bool depart = true;
 int tempsD = 0;
+
+bool pressed = false;
+
 void setup()
 {
   Serial.begin(9600);
@@ -76,6 +79,7 @@ void setup()
   lcd.setCursor(7, 1);
   lcd.print("SAT37");
   
+  keypad.addEventListener(keypadEvent);
   
   pinMode(ROUGE, OUTPUT);
   digitalWrite(ROUGE, LOW);
@@ -234,7 +238,7 @@ void actu_menu(uint8_t page)
       break;
     case (2):
       lcd.setCursor(0, 0);
-      lcd.print("A: CS:GO");
+      lcd.print("A: R&D");
       lcd.setCursor(0, 1);
       lcd.print("B: Duel");
       lcd.setCursor(0, 2);
@@ -361,7 +365,7 @@ void couleur_LED()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Rouge   Vert   Bleu");
+  lcd.print("Rouge   Bleu   Vert");
   lcd.setCursor(0, 1);
   lcd.print("Cyan   Violet  Jaune");
   lcd.setCursor(0, 2);
@@ -374,26 +378,26 @@ void couleur_LED()
     if (key)
     {
       num = key - '0';
-      switch (num)
-      {
-        case (1): couleur(1, 0, 0);
-          break;
-        case (2): couleur(0, 1, 0);
-          break;
-        case (3): couleur(0, 0, 1);
-          break;
-        case (4): couleur(0, 1, 1);
-          break;
-        case (5): couleur(1, 0, 1);
-          break;
-        case (6): couleur(1, 1, 0);
-          break;
-        case (7): couleur(1, 1, 1);
-          break;
-        case (9): couleur(0, 0, 0);
-          break;
-      }
+      set_couleur(num);
     }
   }
   menu();
+}
+
+void keypadEvent(KeypadEvent key)
+{
+  switch (keypad.getState())
+  {
+    case PRESSED:
+      set_couleur(1);
+      pressed = true;
+      break;
+    case RELEASED:
+      set_couleur(0);
+      pressed = false;
+      break;
+    case HOLD: 
+      pressed = true;
+      break;
+  }
 }

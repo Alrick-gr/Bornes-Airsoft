@@ -24,8 +24,9 @@ void param_capture()
 {
   uint8_t nbr_equipe = choix_chiffre("      Equipes :     ", 1, 7, 2);
   int temps_partie = recup_temps("Partie");
+  uint8_t temps_appuis = choix_chiffre("   Temps appuis :   ", 0, 60, 0);
   Depart(tempsD);
-  capture(nbr_equipe, temps_partie, 0);
+  capture(nbr_equipe, temps_partie, temps_appuis);
 }
 
 void param_conquete()

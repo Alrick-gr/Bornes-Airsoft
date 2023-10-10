@@ -42,7 +42,30 @@ int recup_temps(String message)
 
   return ((int)(temps[0] * 10 + temps[1]) * 60 + temps[2] * 10 + temps[3]);
 }
-
+void set_couleur(uint8_t index)
+{
+  switch (index)
+  {
+    case (1): couleur(1, 0, 0);
+      break;
+    case (3): couleur(0, 1, 0);
+      break;
+    case (2): couleur(0, 0, 1);
+      break;
+    case (4): couleur(0, 1, 1);
+      break;
+    case (5): couleur(1, 0, 1);
+      break;
+    case (6): couleur(1, 1, 0);
+      break;
+    case (7): couleur(1, 1, 1);
+      break;
+    case (9): 
+    default:
+              couleur(0, 0, 0);
+      break;
+  }
+}
 void couleur(bool rouge, bool vert, bool bleu)
 {
   if (LEDs)
@@ -137,7 +160,7 @@ void logos()
 uint8_t choix_chiffre(String message, uint8_t minimum, uint8_t maximum, uint8_t defaut)
 {
   lcd.clear();
-  uint8_t nbr = 2;
+  uint8_t nbr = defaut;
   lcd.setCursor(0, 1);
   lcd.print(message);
   lcd.setCursor(9, 2);
@@ -191,7 +214,7 @@ void choix_code(String message,int8_t* code, uint8_t taille)
     if (key == '*') menu();
     if(key - '0' < 10 and key - '0' >= 0)
     {
-      couleur(1,0,0);
+      set_couleur(1);
       code[index] = key - '0';
       index++;
       lcd.setCursor((20-taille)/2, 1);
@@ -207,7 +230,7 @@ void choix_code(String message,int8_t* code, uint8_t taille)
       lcd.print("                    ");
       lcd.setCursor((20-taille)/2 + index, 2);
       lcd.print("^");
-      couleur(0,0,0);
+      set_couleur(0);
     }
   }
 }
