@@ -221,7 +221,9 @@ void choix_code(String message,int8_t* code, uint8_t taille)
 
       for(uint8_t i = 0; i < taille; i++)
       {
-        //Serial.println(code[i]);
+#ifdef DEBUG
+        Serial.println(code[i]);
+#endif
         if(code[i] != -1)lcd.print(code[i]);
       }
      

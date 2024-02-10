@@ -1,20 +1,23 @@
-#include <Wire.h>
+//#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
+
 //#define V1
 #define V2
+
+//#define DEBUG
 
 #define ROUGE 11
 #define VERT 13
 #define BLEU 12
 #define ALARME 10
-
+#define BUZZER A0
 
 #define ROW_NUM 4   //four rows
 #define COLUMN_NUM 4 //four columns
 
 #ifdef V1
-char keys[ROW_NUM][COLUMN_NUM] = {
+const char keys[ROW_NUM][COLUMN_NUM] = {
   {'1', '4', '7', '*'},
   {'2', '5', '8', '0'},
   {'3', '6', '9', '#'},
@@ -32,6 +35,7 @@ const char keys[ROW_NUM][COLUMN_NUM] = {
 #if defined(V1)&& defined(V2)
 #error "Pas les deux"
 #endif
+
 const byte pin_rows[ROW_NUM] = {9, 8, 7, 6}; //connect to the row pinouts of the keypad
 const byte pin_column[COLUMN_NUM] = {5, 4, 3, 2}; //connect to the column pinouts of the keypad
 
@@ -64,13 +68,16 @@ bool lumiere = true;
 bool LEDs = true;
 bool alarme = false;
 bool depart = true;
+bool bip = true;
 int tempsD = 0;
 
 bool pressed = false;
 
 void setup()
 {
+#ifdef DEBUG
   Serial.begin(9600);
+#endif
   lcd.init(); // initialize the lcd
   lcd.backlight();
   lcd.createChar(0, cloche);
@@ -89,19 +96,33 @@ void setup()
   digitalWrite(BLEU, LOW);
   pinMode(ALARME, OUTPUT);
   digitalWrite(ALARME, HIGH);
-  
+
+
+  tone(BUZZER, 1000,250);
   couleur(1,0,0);
   delay(250);
+  
+  tone(BUZZER, 2000,250);
   couleur(0,1,0);
   delay(250);
+  
+  tone(BUZZER, 3000,250);
   couleur(0,0,1);
   delay(250);
+  
+  tone(BUZZER, 4000,250);
   couleur(0,1,1);
   delay(250);
+  
+  tone(BUZZER, 5000,250);
   couleur(1,0,1);
   delay(250);
+  
+  tone(BUZZER, 6000,250);
   couleur(1,1,0);
   delay(250);
+  
+  tone(BUZZER, 6500,250);
   couleur(0,0,0);
 
   menu();
@@ -124,7 +145,6 @@ void menu()
         {
           case (1):
             param_spawn();
-            actu_menu(page);
             break;
           case (2):
             param_CS();
@@ -389,11 +409,13 @@ void keypadEvent(KeypadEvent key)
   switch (keypad.getState())
   {
     case PRESSED:
-      set_couleur(1);
+      if(bip)
+        tone(BUZZER, 5000,100);
+      //set_couleur(1);
       pressed = true;
       break;
     case RELEASED:
-      set_couleur(0);
+      //set_couleur(0);
       pressed = false;
       break;
     case HOLD: 

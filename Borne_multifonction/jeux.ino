@@ -1,7 +1,5 @@
 void spawn(int temps_partie, int temps_spawn)
 {
-  
-
   static int debut_partie = millis() / 1000;
   uint32_t debut_spawn = 0;
   bool flag = false;
@@ -145,22 +143,32 @@ void CS(int temps)
   lcd.print("^");
   lcd.setCursor(5, 0);
   lcd.print(code[cpt]);
-  int debut_partie = millis() / 1000;
+  static unsigned int debut_partie = millis() / 1000;
   bool fin = false;
   while (!fin)
   {
     if (millis() / 500 % 2)
     {
+      if(bip)
+      {
+        tone(BUZZER, 4500, 100);
+        bip = false;
+      }
+        
       couleur(1, 0, 0);
       lcd.setCursor(7, 2);
       lcd.print(sec2temps(temps - (millis() / 1000) + debut_partie));
       if ((temps - (millis() / 1000 - debut_partie)) <= 0)
       {
-        message = "Bombe explosée";
+        message = "Bombe explosee";
         fin = true;
       }
     }
-    else couleur(0, 0, 0);
+    else 
+    {
+      couleur(0, 0, 0);
+      bip = true;
+    }
 
     key = keypad.getKey();
     if (key)
@@ -207,7 +215,7 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t temps_appuis)
 {
   lcd.clear();
   couleur(0, 0, 0);
-  unsigned int debut_partie = millis() / 1000;
+  static unsigned int debut_partie = millis() / 1000;
   unsigned int temps[nbr_equipe + 1];
   unsigned int delta_appuis = -1;
   uint8_t equipe_suivante = 0;
@@ -236,6 +244,7 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t temps_appuis)
     }
     if(pressed)//si bouton maintenu
     {
+      //Serial.println("appuis");
       on_alarme(1);
       if(delta_appuis + temps_appuis <= millis()/1000)
       {
@@ -274,7 +283,6 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t temps_appuis)
     if (equipe_active != -1)
     {
       temps[equipe_active] = millis() / 1000 - debut_partie;
-      //Serial.println("-----------");
       for (uint8_t i = 0; i <= nbr_equipe; i++)
       {
         if (i != equipe_active)temps[equipe_active] -= temps[i];
@@ -331,7 +339,7 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t temps_appuis)
 void bombe(int temps, uint8_t *code)
 {
   lcd.clear();
-  int debut_partie = millis() / 1000;
+  static int debut_partie = millis() / 1000;
   bool fin = false;
   String message;
   bool etat_led = true;
@@ -352,10 +360,11 @@ void bombe(int temps, uint8_t *code)
       if (index == 4)
       {
         index = 0;
-        couleur(1, 0, 1);
         delay(500);
-        if (code[0] == entree[0] && code[1] == entree[1] && code[2] == entree[2] && code[3] == entree[3])
+        //if (code[0] == entree[0] && code[1] == entree[1] && code[2] == entree[2] && code[3] == entree[3])
+        if(*((uint32_t*)code) == *((uint32_t*)entree))
         {
+          set_couleur(3);
           fin = true;
           message = "Bombe desamorcee";
           alarme = false;
@@ -363,7 +372,7 @@ void bombe(int temps, uint8_t *code)
         else
         {
           essais++;
-          couleur(1, 0, 0);
+          tone(BUZZER, 1000,500);
           lcd.setCursor(8, 2);
           lcd.print("____");
           if (essais == 3)
@@ -377,6 +386,11 @@ void bombe(int temps, uint8_t *code)
 
     if (millis() / 500 % 2)
     {
+      if(bip)
+      {
+        tone(BUZZER, 4500, 100);
+        bip = false;
+      }
       couleur(1, 0, 0);
       lcd.setCursor(7, 1);
       lcd.print(sec2temps(temps - (millis() / 1000) + debut_partie));
@@ -386,7 +400,11 @@ void bombe(int temps, uint8_t *code)
         message = "Bombe explosee";
       }
     }
-    else couleur(0, 0, 0);
+    else 
+    {
+      couleur(0, 0, 0);
+      bip = true;
+    }
   }
   fin_partie(message);
 }
@@ -419,7 +437,7 @@ void scenar_dim(int temps, uint8_t *code)
 {
   bool phase1 = true;
   lcd.clear();
-  int debut_partie;
+  static int debut_partie;
   bool fin = false;
   String message;
   bool etat_led = true;
