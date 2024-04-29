@@ -4,9 +4,9 @@ int recup_temps(String message)
   lcd.setCursor(0, 0);
   lcd.print(message);
   lcd.setCursor(0, 1);
-  lcd.print("       00:00       ");
+  lcd.print(F("       00:00       "));
   lcd.setCursor(5, 2);
-  lcd.print("  ^  ");
+  lcd.print(F("  ^  "));
   
   logos();
   char key = keypad.getKey();
@@ -34,7 +34,7 @@ int recup_temps(String message)
           if (index > 3) index = 0;
           if (index <= 1)lcd.setCursor(5 + index, 2);
           else lcd.setCursor(5 + index + 1, 2);
-          lcd.print("  ^      ");
+          lcd.print(F("  ^      "));
         }
       }
     }
@@ -114,19 +114,20 @@ void Depart(int temps)
   lcd.clear();
   logos();
   lcd.setCursor(0, 0);
-  lcd.print("Appuyez sur # pour");
+  lcd.print(F("Appuyez sur # pour"));
   lcd.setCursor(0, 1);
-  lcd.print("  lancer la partie");
+  lcd.print(F("  lancer la partie"));
   lcd.setCursor(0, 2);
-  lcd.print("     dans " + sec2temps(temps));
+  lcd.print(F("     dans "));
+  lcd.print(sec2temps(temps));
   while (keypad.getKey() != '#');
 
   lcd.setCursor(0, 0);
-  lcd.print("                   ");
+  lcd.print(F("                   "));
   lcd.setCursor(0, 1);
-  lcd.print(" debut de la partie");
+  lcd.print(F(" debut de la partie"));
   lcd.setCursor(0, 2);
-  lcd.print("     dans ");
+  lcd.print(F("     dans "));
   int delta = millis() / 1000;
   while (millis() / 1000 - delta < temps)
   {
@@ -138,7 +139,7 @@ void Depart(int temps)
   }
   lcd.clear();
   lcd.setCursor(0, 1);
-  lcd.print("Debut de partie");
+  lcd.print(F("Debut de partie"));
   delay(3000);
   lcd.clear();
 }
@@ -203,9 +204,9 @@ void choix_code(String message,int8_t* code, uint8_t taille)
   lcd.print(message);
   
   lcd.setCursor((20-taille)/2,1);
-  for(uint8_t i = 0; i<taille; i++)lcd.print("_");
+  for(uint8_t i = 0; i<taille; i++)lcd.print(F("_"));
   lcd.setCursor((20-taille)/2,2);
-  lcd.print("^");
+  lcd.print(F("^"));
 
   logos();
   while(key != '#' or code[taille-1] == -1)
@@ -229,9 +230,9 @@ void choix_code(String message,int8_t* code, uint8_t taille)
      
       if(index>=taille)index = 0;
       lcd.setCursor(0, 2);
-      lcd.print("                    ");
+      lcd.print(F("                    "));
       lcd.setCursor((20-taille)/2 + index, 2);
-      lcd.print("^");
+      lcd.print(F("^"));
       set_couleur(0);
     }
   }

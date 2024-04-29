@@ -84,7 +84,7 @@ void setup()
   lcd.createChar(1, fleche);
 
   lcd.setCursor(7, 1);
-  lcd.print("SAT37");
+  lcd.print(F("SAT37"));
   
   keypad.addEventListener(keypadEvent);
   
@@ -153,7 +153,7 @@ void menu()
           case (3):
             break;
           case (4):
-            tempsD = recup_temps("Temps avant depart");
+            tempsD = recup_temps(F("Temps avant depart"));
             actu_menu(page);
             break;
         }
@@ -204,7 +204,7 @@ void menu()
             actu_menu(page);
             break;
           case (2):
-            param_scenar_dim();
+            param_fils();
             actu_menu(page);
             break;
           case (3):
@@ -213,7 +213,7 @@ void menu()
             on_alarme(true);
             lcd.clear();
             lcd.setCursor(0,0);
-            lcd.print("Ca sonne");
+            lcd.print(F("Ca sonne"));
             while (!keypad.getKey());
             on_alarme(false);
             actu_menu(page);
@@ -248,43 +248,43 @@ void actu_menu(uint8_t page)
   {
     case (1):
       lcd.setCursor(0, 0);
-      lcd.print("A: Spawn");
+      lcd.print(F("A: Spawn"));
       lcd.setCursor(0, 1);
-      lcd.print("B: Clicker");
+      lcd.print(F("B: Clicker"));
       lcd.setCursor(0, 2);
-      lcd.print("C: Capture Zone");
+      lcd.print(F("C: Capture Zone"));
       lcd.setCursor(0, 3);
-      lcd.print("D: Conquete");
+      lcd.print(F("D: Conquete"));
       break;
     case (2):
       lcd.setCursor(0, 0);
-      lcd.print("A: R&D");
+      lcd.print(F("A: R&D"));
       lcd.setCursor(0, 1);
-      lcd.print("B: Duel");
+      lcd.print(F("B: Duel"));
       lcd.setCursor(0, 2);
-      lcd.print("C: Bombe");
+      lcd.print(F("C: Bombe"));
       lcd.setCursor(0, 3);
-      lcd.print("D: Scenario Dim");
+      lcd.print(F("D: Coupage fils"));
       break;
     case (3):
       lcd.setCursor(0, 0);
-      lcd.print("A:");
+      lcd.print(F("A:"));
       lcd.setCursor(0, 1);
-      lcd.print("B:");
+      lcd.print(F("B:"));
       lcd.setCursor(0, 2);
-      lcd.print("C:");
+      lcd.print(F("C:"));
       lcd.setCursor(0, 3);
-      lcd.print("D:");
+      lcd.print(F("D:"));
       break;
     case (4):
       lcd.setCursor(0, 0);
-      lcd.print("A: Depart differe");
+      lcd.print(F("A: Depart differe"));
       lcd.setCursor(0, 1);
-      lcd.print("B: Couleurs");
+      lcd.print(F("B: Couleurs"));
       lcd.setCursor(0, 2);
-      lcd.print("C: Parametres");
+      lcd.print(F("C: Parametres"));
       lcd.setCursor(0, 3);
-      lcd.print("D: Alarme");
+      lcd.print(F("D: Alarme"));
       break;
   }
   lcd.setCursor(19, 3);
@@ -297,7 +297,7 @@ void fin_partie(String message)
 {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("    Fin de partie    ");
+  lcd.print(F("    Fin de partie    "));
   lcd.setCursor(0, 1);
   lcd.print(message);
 
@@ -353,43 +353,43 @@ void param_generaux()
 void actu_param()
 {
   lcd.setCursor(0, 0);
-  lcd.print("A: Ecran  ");
+  lcd.print(F("A: Ecran  "));
   if (lumiere)
   {
-    lcd.print("ON ");
+    lcd.print(F("ON "));
     lcd.backlight();
   }
   else
   {
-    lcd.print("OFF");
+    lcd.print(F("OFF"));
     lcd.noBacklight();
   }
 
   lcd.setCursor(0, 1);
-  lcd.print("B: LEDs   ");
-  if (LEDs) lcd.print("ON ");
-  else lcd.print("OFF");
+  lcd.print(F("B: LEDs   "));
+  if (LEDs) lcd.print(F("ON "));
+  else lcd.print(F("OFF"));
 
   lcd.setCursor(0, 2);
-  lcd.print("C: Alarme ");
-  if (alarme) lcd.print("ON ");
-  else lcd.print("OFF");
+  lcd.print(F("C: Alarme "));
+  if (alarme) lcd.print(F("ON "));
+  else lcd.print(F("OFF"));
 
   lcd.setCursor(0, 3);
-  lcd.print("D: Depart ");
-  if (depart) lcd.print("ON ");
-  else lcd.print("OFF");
+  lcd.print(F("D: Depart "));
+  if (depart) lcd.print(F("ON "));
+  else lcd.print(F("OFF"));
 }
 
 void couleur_LED()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Rouge   Bleu   Vert");
+  lcd.print(F("Rouge   Bleu   Vert"));
   lcd.setCursor(0, 1);
-  lcd.print("Cyan   Violet  Jaune");
+  lcd.print(F("Cyan   Violet  Jaune"));
   lcd.setCursor(0, 2);
-  lcd.print("Blanc           Noir");
+  lcd.print(F("Blanc           Noir"));
   uint8_t num = 0;
   char key = keypad.getKey();
   while (key != '#')
@@ -406,6 +406,10 @@ void couleur_LED()
 
 void keypadEvent(KeypadEvent key)
 {
+#ifdef DEBUG
+  Serial.print(F("Key = "));
+  Serial.println(key);
+#endif
   switch (keypad.getState())
   {
     case PRESSED:
