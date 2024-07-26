@@ -140,7 +140,9 @@ void Depart(int temps)
   lcd.clear();
   lcd.setCursor(0, 1);
   lcd.print(F("Debut de partie"));
+  on_alarme(true);
   delay(3000);
+  on_alarme(false);
   lcd.clear();
 }
 

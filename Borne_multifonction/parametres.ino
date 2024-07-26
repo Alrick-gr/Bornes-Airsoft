@@ -25,10 +25,11 @@ void param_CS()
 void param_capture()
 {
   uint8_t nbr_equipe = choix_chiffre(F("      Equipes :     "), 1, 7, 2);
-  int temps_partie = recup_temps(F("Partie"));
+  unsigned int temps_partie = recup_temps(F("Partie"));
   uint8_t temps_appuis = choix_chiffre(F("   Temps appuis :   "), 0, 60, 0);
+  unsigned int temps_malus = recup_temps(F("Temps malus"));
   Depart(tempsD);
-  capture(nbr_equipe, temps_partie, temps_appuis);
+  capture(nbr_equipe, temps_partie, temps_appuis, temps_malus);
 }
 
 void param_conquete()

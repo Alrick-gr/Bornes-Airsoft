@@ -301,8 +301,9 @@ void fin_partie(String message)
   lcd.setCursor(0, 1);
   lcd.print(message);
 
+  uint32_t timeout = millis() / 1000;
   on_alarme(true);
-  while (!keypad.getKey())
+  while (!keypad.getKey() && (millis()/1000) - timeout < 30)
   {
     if (millis() / 100 % 2)couleur(random(2), random(2), random(2));
   }

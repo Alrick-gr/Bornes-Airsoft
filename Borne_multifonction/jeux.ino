@@ -1,6 +1,6 @@
 void spawn(int temps_partie, int temps_spawn)
 {
-  static int debut_partie = millis() / 1000;
+  unsigned int debut_partie = millis() / 1000;
   uint32_t debut_spawn = 0;
   bool flag = false;
   bool flag_temps = true;
@@ -229,12 +229,13 @@ void CS(int temps, int limite)
   fin_partie(message);
 }
 
-void capture(uint8_t nbr_equipe, int temps_limite, uint8_t temps_appuis)
+void capture(uint8_t nbr_equipe, unsigned int temps_limite, uint8_t temps_appuis, unsigned int temps_malus)
 {
   lcd.clear();
   couleur(0, 0, 0);
-  static unsigned int debut_partie = millis() / 1000;
+  unsigned int debut_partie = millis() / 1000;
   unsigned int temps[nbr_equipe + 1];
+  unsigned int delta_temps_malus = 0;
   unsigned int delta_appuis = -1;
   uint8_t equipe_suivante = 0;
   uint8_t equipe[nbr_equipe + 1];
@@ -267,7 +268,7 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t temps_appuis)
       if (delta_appuis + temps_appuis <= millis() / 1000)
       {
         equipe_active = equipe_suivante;
-
+        delta_temps_malus = millis() /1000;
       }
       set_couleur(((millis() / 250) % 2) ? equipe_suivante : equipe_active);
     }
@@ -297,7 +298,12 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t temps_appuis)
         case (1): lcd.setCursor(0, 0);
           lcd.print("1:" + sec2temps(temps[1]));
       }
+      if(delta_temps_malus + temps_malus <= millis() / 1000)
+      {
+        equipe_active = 0;
+      }
     }
+    
     if (equipe_active != -1)
     {
       temps[equipe_active] = millis() / 1000 - debut_partie;
@@ -357,7 +363,7 @@ void capture(uint8_t nbr_equipe, int temps_limite, uint8_t temps_appuis)
 void bombe(int temps, uint8_t *code)
 {
   lcd.clear();
-  static int debut_partie = millis() / 1000;
+  int debut_partie = millis() / 1000;
   bool fin = false;
   String message;
   bool etat_led = true;
@@ -427,11 +433,12 @@ void bombe(int temps, uint8_t *code)
   fin_partie(message);
 }
 
-void conquete(uint8_t nbrClick, int temps_partie, int temps_spawn)
+void conquete(uint8_t nbrClick, uint32_t temps_partie, uint32_t temps_spawn)
 {
+  uint32_t delta = millis()/1000;
   clicker(nbrClick);
   lcd.clear();
-  spawn(temps_partie, temps_spawn);
+  spawn(temps_partie - delta, temps_spawn);
 }
 
 void duel(uint8_t nbr_bip)
@@ -454,7 +461,7 @@ void duel(uint8_t nbr_bip)
 void fils(unsigned int temps, uint8_t nbr_fils)
 {
   lcd.clear();
-  static int debut_partie = millis() / 1000;
+  unsigned int debut_partie = millis() / 1000;
   bool flag_actu, flag_fenetre = false;
   bool fin = false;
   String message;
@@ -545,7 +552,9 @@ void fils(unsigned int temps, uint8_t nbr_fils)
         default:
           break;
       }
+#ifdef DEBUG
       Serial.println(essais);
+#endif
       lcd.print(' ');
       if (essais == 0)
       {
